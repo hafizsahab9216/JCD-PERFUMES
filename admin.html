@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JCD PERFUMES | Maison Executive Admin Suite</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Admin specific enhancements */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 6, 9, 0.96);
+            backdrop-filter: blur(20px);
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: #0f111a;
+            border: 1px solid var(--gold-primary);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.25);
+            border-radius: var(--radius-md);
+            max-width: 440px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+        .login-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1.5px solid var(--gold-primary);
+            color: var(--gold-primary);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 25px var(--gold-glow);
+        }
+    </style>
+</head>
+<body class="admin-body">
+
+    <!-- Admin Master Password Gate (Password: HAFIZ) -->
+    <div class="login-overlay" id="admin-login-gate">
+        <div class="login-card">
+            <div class="login-icon">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="heading-gold mb-2" style="font-size: 1.6rem;">Maison Admin Access</h2>
+            <p class="text-secondary mb-4" style="font-size: 0.88rem;">
+                Enter the master executive key to access VIP consultations, client formulas, inquiries, and database records.
+            </p>
+
+            <form id="admin-login-form">
+                <div class="form-group text-left" style="text-align: left;">
+                    <label for="admin-password-input">Master Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="admin-password-input" class="form-control" placeholder="Enter password..." required autofocus>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-gold w-100 mt-2" style="width: 100%;">
+                    <i class="fa-solid fa-key"></i> Authenticate & Enter
+                </button>
+            </form>
+            <div class="mt-4">
+                <a href="index.html" class="text-muted" style="font-size: 0.8rem; text-decoration: none;">
+                    <i class="fa-solid fa-arrow-left"></i> Return to Main Website
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Admin Suite Interface -->
+    <div id="admin-dashboard-app" style="display: none;">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="container admin-nav">
+                <div class="d-flex align-items-center gap-3" style="display: flex; align-items: center; gap: 15px;">
+                    <a href="index.html" class="brand-logo" style="text-decoration: none;">
+                        <div class="logo-icon" style="width: 36px; height: 36px; font-size: 0.95rem;">JCD</div>
+                        <div class="logo-text">
+                            <span class="brand-title" style="font-size: 1.1rem;">JCD PERFUMES</span>
+                            <span class="brand-sub" style="font-size: 0.55rem;">Executive Admin Suite</span>
+                        </div>
+                    </a>
+                    <span class="admin-status-badge">
+                        <span class="admin-status-dot"></span>
+                        <span id="db-connection-text">Supabase Live Connected</span>
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="btn btn-outline-gold btn-sm" id="refresh-data-btn" title="Sync database data">
+                        <i class="fa-solid fa-rotate"></i> Refresh
+                    </button>
+                    <a href="index.html" class="btn btn-outline-gold btn-sm" target="_blank">
+                        <i class="fa-solid fa-external-link"></i> Live Site
+                    </a>
+                    <button class="btn btn-gold btn-sm" id="admin-logout-btn">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Content Area -->
+        <main class="container" style="padding: 30px 24px 60px;">
+            <!-- Top Dashboard Stats -->
+            <div class="admin-stats-grid">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="stat-consultations">0</h3>
+                        <p>VIP Consultations</p>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="stat-quizzes">0</h3>
+                        <p>Custom Formulas</p>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="stat-inquiries">0</h3>
+                        <p>Concierge Inquiries</p>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon"><i class="fa-solid fa-star"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="stat-reviews">0</h3>
+                        <p>Client Reveries</p>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon"><i class="fa-solid fa-crown"></i></div>
+                    <div class="admin-stat-info">
+                        <h3 id="stat-subscribers">0</h3>
+                        <p>VIP Club Members</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="consultations-tab">
+                    <i class="fa-solid fa-calendar-days"></i> VIP Appointments (<span id="tab-count-consultations">0</span>)
+                </button>
+                <button class="admin-tab-btn" data-tab="quizzes-tab">
+                    <i class="fa-solid fa-flask"></i> Scent Quiz Formulas (<span id="tab-count-quizzes">0</span>)
+                </button>
+                <button class="admin-tab-btn" data-tab="inquiries-tab">
+                    <i class="fa-solid fa-inbox"></i> Inquiries & Sample Requests (<span id="tab-count-inquiries">0</span>)
+                </button>
+                <button class="admin-tab-btn" data-tab="reviews-tab">
+                    <i class="fa-solid fa-comment-dots"></i> Client Reveries (<span id="tab-count-reviews">0</span>)
+                </button>
+                <button class="admin-tab-btn" data-tab="subscribers-tab">
+                    <i class="fa-solid fa-users"></i> VIP Subscribers (<span id="tab-count-subscribers">0</span>)
+                </button>
+                <button class="admin-tab-btn" data-tab="schema-tab">
+                    <i class="fa-solid fa-database"></i> Supabase Setup & SQL
+                </button>
+            </div>
+
+            <!-- Tab 1: VIP Consultations -->
+            <div class="admin-tab-content active" id="consultations-tab">
+                <div class="admin-actions-bar">
+                    <input type="text" class="admin-search-input" id="search-consultations" placeholder="🔍 Search by name, email, phone, or date...">
+                    <div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="exportTableToCSV('consultations')">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Contact</th>
+                                <th>Session Date & Time</th>
+                                <th>Olfactory Family</th>
+                                <th>Experience Type</th>
+                                <th>Notes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consultations-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Scent Quiz Formulas -->
+            <div class="admin-tab-content" id="quizzes-tab">
+                <div class="admin-actions-bar">
+                    <input type="text" class="admin-search-input" id="search-quizzes" placeholder="🔍 Search formula results, client, notes...">
+                    <div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="exportTableToCSV('quizzes')">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Email</th>
+                                <th>Aura / Vibe</th>
+                                <th>Season</th>
+                                <th>Intensity</th>
+                                <th>Matched Fragrance</th>
+                                <th>Formula Composition</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quizzes-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 3: Inquiries & Sample Requests -->
+            <div class="admin-tab-content" id="inquiries-tab">
+                <div class="admin-actions-bar">
+                    <input type="text" class="admin-search-input" id="search-inquiries" placeholder="🔍 Search messages, sender, subject...">
+                    <div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="exportTableToCSV('inquiries')">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Sender</th>
+                                <th>Contact Details</th>
+                                <th>Type</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiries-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 4: Client Reveries / Reviews -->
+            <div class="admin-tab-content" id="reviews-tab">
+                <div class="admin-actions-bar">
+                    <input type="text" class="admin-search-input" id="search-reviews" placeholder="🔍 Search reviews, authors, perfume...">
+                    <div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="exportTableToCSV('reviews')">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Author</th>
+                                <th>Location</th>
+                                <th>Rating</th>
+                                <th>Favorite Scent</th>
+                                <th>Review Message</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviews-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 5: Subscribers -->
+            <div class="admin-tab-content" id="subscribers-tab">
+                <div class="admin-actions-bar">
+                    <input type="text" class="admin-search-input" id="search-subscribers" placeholder="🔍 Search subscriber email...">
+                    <div>
+                        <button class="btn btn-outline-gold btn-sm" onclick="exportTableToCSV('subscribers')">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Subscriber Email</th>
+                                <th>Source</th>
+                                <th>Subscribed At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subscribers-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 6: Supabase Setup & SQL Schema -->
+            <div class="admin-tab-content" id="schema-tab">
+                <div class="glass-panel" style="padding: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <h3 class="heading-gold" style="font-size: 1.4rem;">Supabase Database Integration</h3>
+                            <p class="text-secondary" style="font-size: 0.88rem;">
+                                Project Reference: <code style="color: var(--gold-light); background: rgba(255,255,255,0.06); padding: 2px 8px; border-radius: 4px;">bcaklkzukfkhaxhvyjeb</code>
+                            </p>
+                        </div>
+                        <button class="btn btn-gold btn-sm" id="copy-sql-btn">
+                            <i class="fa-solid fa-copy"></i> Copy SQL Schema
+                        </button>
+                    </div>
+
+                    <p class="text-secondary mb-3" style="font-size: 0.9rem;">
+                        If you have not executed the tables in your Supabase SQL Editor yet, copy and execute the SQL script below to enable full database tables and instant cloud synchronization:
+                    </p>
+
+                    <pre id="sql-schema-code" style="background: #08090d; border: 1px solid var(--gold-border); border-radius: var(--radius-sm); padding: 20px; color: #a5b4fc; font-family: monospace; font-size: 0.85rem; max-height: 400px; overflow-y: auto; white-space: pre-wrap;"></pre>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Admin JS Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
